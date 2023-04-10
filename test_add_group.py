@@ -5,12 +5,20 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options as options
+from selenium.webdriver.firefox.options import Options as Firefox_Options
 import unittest, time, re
+
+options = Options()
+options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
 
 
 class AddTestGroup(unittest.TestCase):
     def setUp(self):
-        self.wd = webdriver.Firefox()
+        self.wd = webdriver.Firefox(executable_path=r'G:\AT\courses\geckodriver-v0.33.0-win32\geckodriver.exe',
+                                    options=options)
         self.wd.implicitly_wait(30)
 
     def test_add_test_group(self):
