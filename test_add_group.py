@@ -12,16 +12,14 @@ from selenium.webdriver.firefox.options import Options as Firefox_Options
 import unittest, time, re
 from group import Group
 
-# расположение gecko-drive и firefox отличается от дефолтного
+# расположение firefox отличается от дефолтного
 options = Options()
 options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
 
 
 class AddTestGroup(unittest.TestCase):
     def setUp(self):
-        # расположение gecko-drive и firefox отличается от дефолтного
-        self.wd = webdriver.Firefox(executable_path=r'G:\AT\courses\geckodriver-v0.33.0-win32\geckodriver.exe',
-                                    options=options)
+        self.wd = webdriver.Firefox(options=options)
         self.wd.implicitly_wait(30)
 
     def test_add_test_group(self):
