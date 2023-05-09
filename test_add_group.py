@@ -11,6 +11,7 @@ from selenium.webdriver.firefox.options import Options as options
 from selenium.webdriver.firefox.options import Options as Firefox_Options
 import unittest, time, re
 from group import Group
+from contact import Contact
 
 # расположение firefox отличается от дефолтного
 options = Options()
@@ -29,6 +30,13 @@ class AddTestGroup(unittest.TestCase):
         self.open_groups_page(wd)
         self.create_group(wd, Group(name="kappa", header="chino", footer="blank"))
         self.return_to_group_page(wd)
+        self.logout(wd)
+
+    def test_add_contact(self):
+        wd = self.wd
+        self.open_home_page(wd)
+        self.login(wd, username="admin", password="secret")
+        self.create_contact(wd, Contact(firstname="kappa", middlename="middlename", lastname="lastname"))
         self.logout(wd)
 
     def test_add_empty_group(self):
@@ -58,6 +66,22 @@ class AddTestGroup(unittest.TestCase):
         wd.find_element_by_name("group_footer").click()
         wd.find_element_by_name("group_footer").clear()
         wd.find_element_by_name("group_footer").send_keys(Group.footer)
+        # submit group creation
+        wd.find_element_by_name("submit").click()
+
+    def create_contact(self, wd, Contact):
+        # init contact creation
+        wd.find_element_by_link_text("add new").click()
+        # fill contact firm
+        wd.find_element_by_name("firstname").click()
+        wd.find_element_by_name("firstname").clear()
+        wd.find_element_by_name("firstname").send_keys(Contact.firstname)
+        wd.find_element_by_name("middlename").click()
+        wd.find_element_by_name("middlename").clear()
+        wd.find_element_by_name("middlename").send_keys(Contact.middlename)
+        wd.find_element_by_name("lastname").click()
+        wd.find_element_by_name("lastname").clear()
+        wd.find_element_by_name("lastname").send_keys(Contact.lastname)
         # submit group creation
         wd.find_element_by_name("submit").click()
 
