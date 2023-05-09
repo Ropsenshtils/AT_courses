@@ -20,7 +20,7 @@ def test_add_test_group(app):
 
 def test_add_contact(app):
     app.session.login(username="admin", password="secret")
-    app.create_contact(Contact(firstname="kappa", middlename="middlename", lastname="lastname"))
+    app.contact.create(Contact(firstname="kappa", middlename="middlename", lastname="lastname"))
     app.session.logout()
 
 
