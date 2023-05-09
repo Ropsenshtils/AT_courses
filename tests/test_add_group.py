@@ -2,7 +2,6 @@
 import pytest
 from fixture.application import Application
 from model.group import Group
-from model.contact import Contact
 
 
 @pytest.fixture()
@@ -15,12 +14,6 @@ def app(request):
 def test_add_test_group(app):
     app.session.login(username="admin", password="secret")
     app.group.create(Group(name="kappa", header="chino", footer="blank"))
-    app.session.logout()
-
-
-def test_add_contact(app):
-    app.session.login(username="admin", password="secret")
-    app.contact.create(Contact(firstname="kappa", middlename="middlename", lastname="lastname"))
     app.session.logout()
 
 
