@@ -28,4 +28,5 @@ class ContactHelper:
         wd.find_element_by_name("selected[]").click()
         # Submit first contact
         wd.find_element(By.XPATH, '//input[@value="Delete"]').click()
+        wd.switch_to.alert.accept()
         # wd.find_element_by_xpath('//input[@value="Delete"]')
