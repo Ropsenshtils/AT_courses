@@ -16,6 +16,7 @@ class ContactHelper:
 
     def delete_first_contact(self):
         wd = self.app.wd
+        self.open_home_page()
         # Select first contact
         wd.find_element_by_name("selected[]").click()
         # Submit first contact
@@ -40,9 +41,19 @@ class ContactHelper:
 
     def modify_first_contact(self, contact):
         wd = self.app.wd
+        self.open_home_page()
         # update first contact
         wd.find_element(By.XPATH, '//img[@title="Edit"]').click()
         # fill contact firm
         self.fill_firm(contact)
         # submit contact creation
         wd.find_element_by_name("update").click()
+
+    def count(self):
+        wd = self.app.wd
+        self.open_home_page()
+        return len(wd.find_elements_by_name("selected[]"))
+
+    def open_home_page(self):
+        wd = self.app.wd
+        wd.find_element_by_link_text("home").click()
