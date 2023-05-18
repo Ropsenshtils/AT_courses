@@ -13,7 +13,6 @@ class Application:
         options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
 
         self.wd = webdriver.Firefox(options=options)
-        self.wd.implicitly_wait(30)
         self.session = SessionHelper(self)
         self.group = GroupHelper(self)
         self.contact = ContactHelper(self)
