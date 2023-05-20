@@ -18,13 +18,14 @@ class ContactHelper:
 
     def delete_first_contact(self):
         wd = self.app.wd
+        table = "maintable"
+        row = 2
         self.open_home_page()
         # Select first contact
-        wd.find_element_by_name("selected[]").click()
+        wd.find_element_by_xpath(self.cell_handler(table=table, column=1, row=row)).click()
         # Submit first contact
-        wd.find_element(By.XPATH, '//input[@value="Delete"]').click()
+        wd.find_element_by_xpath('//input[@value="Delete"]').click()
         wd.switch_to.alert.accept()
-        # wd.find_element_by_xpath('//input[@value="Delete"]')
 
     def fill_firm(self, contact):
         wd = self.app.wd
