@@ -1,4 +1,5 @@
 from selenium.webdriver.common.by import By
+from model.contact import Contact
 
 
 class ContactHelper:
@@ -7,6 +8,7 @@ class ContactHelper:
 
     def create(self, contact):
         wd = self.app.wd
+        self.open_home_page()
         # init contact creation
         wd.find_element_by_link_text("add new").click()
         # fill contact firm
@@ -58,3 +60,20 @@ class ContactHelper:
         wd = self.app.wd
         if not (wd.current_url.endswith("/") & len(wd.find_elements_by_link_text("add new")) > 0):
             wd.find_element_by_link_text("home").click()
+
+    def cell_handler(self, table, column, row):
+        cell_xpath = "//*[@id='" + str(table) + "']/tbody/tr[" + str(row) + "]/td[" + str(column) + "]"
+        return cell_xpath
+
+    def get_contact_list(self):
+        wd = self.app.wd
+        table = "maintable"
+        contacts = []
+        self.open_home_page()
+        for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr"))):
+            id = wd.find_element_by_xpath(self.cell_handler(table=table, column=1, row=row)).find_element_by_tag_name(
+                "input").get_attribute("value")
+            firstname = wd.find_element_by_xpath(self.cell_handler(table=table, column=3, row=row)).text
+            lastname = wd.find_element_by_xpath(self.cell_handler(table=table, column=2, row=row)).text
+            contacts.append(Contact(firstname=firstname, lastname=lastname, id=id))
+        return contacts
