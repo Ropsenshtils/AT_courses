@@ -15,6 +15,7 @@ class ContactHelper:
         self.fill_firm(contact)
         # submit contact creation
         wd.find_element_by_name("submit").click()
+        self.contact_cache = None
 
     def delete_first_contact(self):
         wd = self.app.wd
@@ -26,6 +27,7 @@ class ContactHelper:
         # Submit first contact
         wd.find_element_by_xpath('//input[@value="Delete"]').click()
         wd.switch_to.alert.accept()
+        self.contact_cache = None
 
     def fill_firm(self, contact):
         wd = self.app.wd
@@ -51,6 +53,7 @@ class ContactHelper:
         self.fill_firm(contact)
         # submit contact creation
         wd.find_element_by_name("update").click()
+        self.contact_cache = None
 
     def count(self):
         wd = self.app.wd
@@ -66,15 +69,17 @@ class ContactHelper:
         cell_xpath = "//*[@id='" + str(table) + "']/tbody/tr[" + str(row) + "]/td[" + str(column) + "]"
         return cell_xpath
 
+    contact_cache = None
+
     def get_contact_list(self):
         wd = self.app.wd
         table = "maintable"
-        contacts = []
+        self.contact_cache = []
         self.open_home_page()
-        for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr"))+1):
+        for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr")) + 1):
             id = wd.find_element_by_xpath(self.cell_handler(table=table, column=1, row=row)).find_element_by_tag_name(
                 "input").get_attribute("value")
             firstname = wd.find_element_by_xpath(self.cell_handler(table=table, column=3, row=row)).text
             lastname = wd.find_element_by_xpath(self.cell_handler(table=table, column=2, row=row)).text
-            contacts.append(Contact(firstname=firstname, lastname=lastname, id=id))
-        return contacts
+            self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id))
+        return list(self.contact_cache)
