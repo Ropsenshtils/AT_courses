@@ -71,7 +71,7 @@ class ContactHelper:
         table = "maintable"
         contacts = []
         self.open_home_page()
-        for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr"))):
+        for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr"))+1):
             id = wd.find_element_by_xpath(self.cell_handler(table=table, column=1, row=row)).find_element_by_tag_name(
                 "input").get_attribute("value")
             firstname = wd.find_element_by_xpath(self.cell_handler(table=table, column=3, row=row)).text
