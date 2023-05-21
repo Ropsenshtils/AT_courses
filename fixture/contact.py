@@ -82,28 +82,21 @@ class ContactHelper:
     contact_cache = None
 
     def get_contact_list(self):
-        wd = self.app.wd
-        table = "maintable"
-        self.contact_cache = []
-        self.open_home_page()
-        for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr")) + 1):
-            id = wd.find_element_by_xpath(self.cell_handler(column=1, row=row)).find_element_by_tag_name(
-                "input").get_attribute("value")
-            lastname = wd.find_element_by_xpath(self.cell_handler(column=2, row=row)).text
-            firstname = wd.find_element_by_xpath(self.cell_handler(column=3, row=row)).text
-            addreses = wd.find_element_by_xpath(self.cell_handler(column=4, row=row)).text
-            emails = wd.find_element_by_xpath(self.cell_handler(column=5, row=row)).text
-            all_phones = wd.find_element_by_xpath(self.cell_handler(column=6, row=row)).text
-            phones = wd.find_element_by_xpath(self.cell_handler(column=6, row=row)).text.splitlines()
-            # self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id))
-            if phones:
-                self.contact_cache.append(
-                    Contact(firstname=firstname, lastname=lastname, id=id, homephone=phones[0],
-                            mobilephone=phones[1],
-                            workphone=phones[2], all_phones=all_phones, all_addresses=addreses, all_emails=emails))
-            else:
+        if self.group_cache is None:
+            wd = self.app.wd
+            table = "maintable"
+            self.contact_cache = []
+            self.open_home_page()
+            for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr")) + 1):
+                id = wd.find_element_by_xpath(self.cell_handler(column=1, row=row)).find_element_by_tag_name(
+                    "input").get_attribute("value")
+                lastname = wd.find_element_by_xpath(self.cell_handler(column=2, row=row)).text
+                firstname = wd.find_element_by_xpath(self.cell_handler(column=3, row=row)).text
+                addreses = wd.find_element_by_xpath(self.cell_handler(column=4, row=row)).text
+                emails = wd.find_element_by_xpath(self.cell_handler(column=5, row=row)).text
+                all_phones = wd.find_element_by_xpath(self.cell_handler(column=6, row=row)).text
                 self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id, all_phones=all_phones,
-                                                  all_addresses=addreses, all_emails=emails))
+                                                      all_addresses=addreses, all_emails=emails))
         return list(self.contact_cache)
 
     def select_contact_by_index(self, index):
