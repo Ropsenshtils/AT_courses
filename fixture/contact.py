@@ -82,7 +82,7 @@ class ContactHelper:
     contact_cache = None
 
     def get_contact_list(self):
-        if self.group_cache is None:
+        if self.contact_cache is None:
             wd = self.app.wd
             table = "maintable"
             self.contact_cache = []
