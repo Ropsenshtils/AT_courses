@@ -64,6 +64,15 @@ class ContactHelper:
         wd.find_element_by_name("update").click()
         self.contact_cache = None
 
+    def modify_contact_by_id(self, contact, id):
+        wd = self.app.wd
+        row = self.find_contact_row_by_id(id)
+        wd.find_element_by_xpath(self.cell_handler(column=8, row=row)).click()
+        self.fill_firm(contact)
+        # submit contact creation
+        wd.find_element_by_name("update").click()
+        self.contact_cache = None
+
     def count(self):
         wd = self.app.wd
         self.open_home_page()
@@ -78,6 +87,7 @@ class ContactHelper:
         table = "maintable"
         cell_xpath = "//*[@id='" + str(table) + "']/tbody/tr[" + str(row) + "]/td[" + str(column) + "]"
         return cell_xpath
+
 
     contact_cache = None
 
@@ -96,13 +106,35 @@ class ContactHelper:
                 emails = wd.find_element_by_xpath(self.cell_handler(column=5, row=row)).text
                 all_phones = wd.find_element_by_xpath(self.cell_handler(column=6, row=row)).text
                 self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id, all_phones=all_phones,
-                                                      all_addresses=addreses, all_emails=emails))
+                                                  all_addresses=addreses, all_emails=emails))
         return list(self.contact_cache)
 
     def select_contact_by_index(self, index):
         wd = self.app.wd
         index += 2
         wd.find_element_by_xpath(self.cell_handler(column=1, row=index)).click()
+
+    def find_contact_row_by_id(self, id):
+        wd = self.app.wd
+        for row in range(2, len(wd.find_elements_by_xpath("//*[@id='maintable']/tbody/tr")) + 1):
+            if wd.find_element_by_xpath(self.cell_handler(column=1, row=row)).find_element_by_tag_name(
+                    "input").get_attribute("value") == str(id):
+                return row
+
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        row = self.find_contact_row_by_id(id)
+        wd.find_element_by_xpath(self.cell_handler(column=1, row=row)).click()
+
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.open_home_page()
+        # Select first contact
+        self.select_contact_by_id(id)
+        # Submit first contact
+        wd.find_element_by_xpath('//input[@value="Delete"]').click()
+        wd.switch_to.alert.accept()
+        self.contact_cache = None
 
     def delete_contact_by_index(self, index):
         wd = self.app.wd
@@ -157,3 +189,17 @@ class ContactHelper:
         self.app.open_home_page()
         wd.find_elements(By.XPATH, '//img[@title="Details"]')[index].click()
 
+    def check_ui(self, check_ui, contacts_db, contacts_ui):
+        if check_ui:
+            def clean(contact):
+                return Contact(id=contact.id, firstname=contact.firstname.strip(), lastname=contact.lastname.strip())
+
+            assert sorted(map(clean, contacts_db), key=Contact.id_or_max) == sorted(contacts_ui, key=Contact.id_or_max)
+
+    def contact_change_info(self, old, new):
+        wd = self.app.wd
+        if new.firstname:
+            old.firstname = new.firstname
+        if new.lastname:
+            old.lastname = new.lastname
+        return old

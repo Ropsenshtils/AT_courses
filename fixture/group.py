@@ -32,7 +32,7 @@ class GroupHelper:
     def delete_first_group(self):
         self.delete_group_by_index(0)
 
-    def select_group_by_index(self,index):
+    def select_group_by_index(self, index):
         wd = self.app.wd
         wd.find_elements_by_name("selected[]")[index].click()
 
@@ -44,7 +44,6 @@ class GroupHelper:
         wd.find_element_by_name("delete").click()
         self.return_to_group_page()
         self.group_cache = None
-
 
     def modify_first_group(self, group):
         self.modify_group_by_index(0)
@@ -96,3 +95,43 @@ class GroupHelper:
                 id = elements.find_element_by_name("selected[]").get_attribute("value")
                 self.group_cache.append(Group(name=text, id=id))
         return list(self.group_cache)
+
+    def delete_group_by_id(self, id):
+        wd = self.app.wd
+        self.open_groups_page()
+        self.select_group_by_id(id)
+        # Submit first group
+        wd.find_element_by_name("delete").click()
+        self.return_to_group_page()
+        self.group_cache = None
+
+    def select_group_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_css_selector("input[value='%s']" % id).click()
+
+    def modify_group_by_id(self, group, id):
+        wd = self.app.wd
+        self.open_groups_page()
+        self.select_group_by_id(id)
+        wd.find_element_by_name("edit").click()
+        self.fill_group_form(group)
+        # submit group update
+        wd.find_element_by_name("update").click()
+        self.return_to_group_page()
+        self.group_cache = None
+
+    def group_change_info(self, old, new):
+        wd = self.app.wd
+        if new.name:
+            old.name = new.name
+        if new.header:
+            old.header = new.header
+        if new.footer:
+            old.footer = new.footer
+        return old
+
+    def check_ui(self, check_ui , groups_db, group_ui):
+        if check_ui:
+            def clean(group):
+                return Group(id=group.id, name=group.name.strip())
+            assert sorted(map(clean, groups_db), key=Group.id_or_max) == sorted(group_ui, key=Group.id_or_max)
