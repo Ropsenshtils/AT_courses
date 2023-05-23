@@ -88,7 +88,6 @@ class ContactHelper:
         cell_xpath = "//*[@id='" + str(table) + "']/tbody/tr[" + str(row) + "]/td[" + str(column) + "]"
         return cell_xpath
 
-
     contact_cache = None
 
     def get_contact_list(self):
@@ -136,6 +135,29 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.contact_cache = None
 
+    def add_contact_to_group(self, contact, group):
+        wd = self.app.wd
+        self.open_home_page()
+        # Select first contact
+        self.select_contact_by_id(contact.id)
+        # Submit first contact
+        wd.find_element_by_name("to_group").click()
+        wd.find_element_by_xpath('//select[@name="to_group"]//option[@value=' + str(group.id) + ']').click()
+        wd.find_element(By.XPATH, "//input[@name='add']").click()
+        # wd.switch_to.alert.accept()
+        self.contact_cache = None
+
+    def remove_from_group(self, contact, group):
+        wd = self.app.wd
+        self.open_home_page()
+        # filter contacts by group
+        wd.find_element_by_xpath('//select[@name="group"]//option[@value=' + str(group.id) + ']').click()
+        self.select_contact_by_id(contact.id)
+        wd.find_element(By.XPATH, "//input[@name='remove']").click()
+        self.open_home_page()
+        self.contact_cache = None
+
+
     def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.open_home_page()
@@ -146,11 +168,13 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.contact_cache = None
 
+
     def open_contact_edit(self, index):
         wd = self.app.wd
         self.open_home_page()
         # update first contact
         wd.find_elements(By.XPATH, '//img[@title="Edit"]')[index].click()
+
 
     def get_info_from_edit_page(self, index):
         wd = self.app.wd
@@ -173,6 +197,7 @@ class ContactHelper:
                        mobilephone=mobile, workphone=work, secondaryphone=secondaryphone, all_addresses=addresses,
                        email1=email1, email2=email2, email3=email3)
 
+
     def get_contact_from_view_page(self, index):
         wd = self.app.wd
         self.open_contact_view_by_index(index)
@@ -184,10 +209,12 @@ class ContactHelper:
         return Contact(homephone=homephone, mobilephone=mobilephone,
                        workphone=workphone, secondaryphone=secondaryphone)
 
+
     def open_contact_view_by_index(self, index):
         wd = self.app.wd
         self.app.open_home_page()
         wd.find_elements(By.XPATH, '//img[@title="Details"]')[index].click()
+
 
     def check_ui(self, check_ui, contacts_db, contacts_ui):
         if check_ui:
@@ -195,6 +222,7 @@ class ContactHelper:
                 return Contact(id=contact.id, firstname=contact.firstname.strip(), lastname=contact.lastname.strip())
 
             assert sorted(map(clean, contacts_db), key=Contact.id_or_max) == sorted(contacts_ui, key=Contact.id_or_max)
+
 
     def contact_change_info(self, old, new):
         wd = self.app.wd

@@ -5,9 +5,11 @@ import os.path
 import importlib
 import jsonpickle
 from fixture.db import DbFixture
+from fixture.orm import ORMFixture
 
 fixture = None
 target = None
+
 
 def load_config(file):
     global target
@@ -17,12 +19,13 @@ def load_config(file):
             target = json.load(f)
     return target
 
+
 @pytest.fixture
 def app(request):
     global fixture
     global target
     browser = request.config.getoption("--browser")
-    web_config=load_config(request.config.getoption("--target"))['web']
+    web_config = load_config(request.config.getoption("--target"))['web']
     # if target is None:
     #     config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), request.config.getoption("--target"))
     #     with open(config_file) as f:
@@ -35,12 +38,31 @@ def app(request):
 
 @pytest.fixture(scope="session", autouse=True)
 def db(request):
-    db_config=load_config(request.config.getoption("--target"))['db']
-    dbfixture = DbFixture(host=db_config['host'], database=db_config['database'], user=db_config['user'], password=db_config['password'])
+    db_config = load_config(request.config.getoption("--target"))['db']
+    dbfixture = DbFixture(host=db_config['host'],
+                          database=db_config['database'],
+                          user=db_config['user'],
+                          password=db_config['password'])
+
     def fin():
         dbfixture.destroy()
         request.addfinalizer(fin)
+
     return dbfixture
+
+@pytest.fixture(scope="session", autouse=True)
+def orm(request):
+    db_config = load_config(request.config.getoption("--target"))['db']
+    ormfixture = ORMFixture(host=db_config['host'],
+                            database=db_config['database'],
+                            user=db_config['user'],
+                            password=db_config['password'])
+
+    def fin():
+        ormfixture.destroy()
+        request.addfinalizer(fin)
+
+    return ormfixture
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -51,9 +73,12 @@ def stop(request):
 
     request.addfinalizer(fin)
     return fixture
+
+
 @pytest.fixture()
 def check_ui(request):
     return request.config.getoption("--check_ui")
+
 
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="firefox")
@@ -74,7 +99,7 @@ def pytest_generate_tests(metafunc):
 def load_from_module(module):
     return importlib.import_module("data.%s" % module).testdata
 
-def load_from_json(file):
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),"data/%s.json" % file)) as f:
-        return jsonpickle.decode(f.read())
 
+def load_from_json(file):
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/%s.json" % file)) as f:
+        return jsonpickle.decode(f.read())
