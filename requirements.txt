@@ -1,17 +1,17 @@
-PyMySQL == 1.0.3
-colorama == 0.4.6
-exceptiongroup == 1.1.1
-ftputil == 5.0.4
-iniconfig == 2.0.0
+PyMySQL
+colorama
+exceptiongroup
+ftputil
+iniconfig
 jsonpickle
-packaging == 23.1
-pip == 21.3.1
-pluggy == 1.0.0
-pony == 0.7.16
-pytest == 7.3.1
-selenium == 3.141.0
-setuptools == 60.2.0
-suds == 1.1.2
-tomli == 2.0.1
-urllib3 == 1.26.15
-wheel == 0.37.1
+packaging
+pip
+pluggy
+pony
+pytest
+selenium
+setuptools
+suds
+tomli
+urllib3
+wheel

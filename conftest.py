@@ -5,7 +5,6 @@ import os.path
 import importlib
 import importlib
 import jsonpickle
-importlib.reload(jsonpickle)
 from fixture.db import DbFixture
 from fixture.orm import ORMFixture
 
