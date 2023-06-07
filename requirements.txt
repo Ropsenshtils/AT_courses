@@ -13,5 +13,5 @@ selenium==3.141.0
 setuptools
 suds
 tomli
-urllib3
+urllib3==1.26.15
 wheel
